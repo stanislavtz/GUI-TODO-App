@@ -13,7 +13,7 @@ def get_todos(file_path):
 
 
 def add_todo(file_path, todo_to_add):
-    """ Adds new todo and save it in the file. """
+    """ Adds new task and save it in the file. """
     with open(file_path, "a") as file:
         file.write(todo_to_add)
 
