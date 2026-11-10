@@ -36,12 +36,12 @@ while True:
 
     if event == "show_todo":
         todos_list = functions.get_todos(FILE_PATH)
-        if not todos_list:
+        if todos_list:
+            formatted_todos = functions.display_todos(todos_list)
+            window["todos"].update(values=formatted_todos)
+        else:
             no_todos = functions.print_no_todos()
             window["todos"].update(no_todos)
-        else:
-            todos = functions.display_todos(todos_list)
-            window["todos"].update(values=todos)
 
     if event == "edit_todo":
         pass
