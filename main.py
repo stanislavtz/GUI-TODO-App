@@ -1,3 +1,4 @@
+import time
 import FreeSimpleGUI as sg
 from modules import functions
 
@@ -20,19 +21,24 @@ layout = [
 ]
 window = sg.Window("TODO App", layout=layout, font=("Helvetica", 20))
 
+todo_number = 0
 while True:
     event, values = window.read()
-    print("Event: ", event)
-    print("Values: ", values)
 
     if event == sg.WIN_CLOSED:
         break
 
     if event == "add_todo":
         todo = values["todo"]
-        formated_todo = todo.capitalize() + "\n"
-        functions.add_todo(FILE_PATH, formated_todo)
-        window["todo"].update(value="")
+        if todo:
+            formated_todo = todo.capitalize() + "\n"
+            functions.add_todo(FILE_PATH, formated_todo)
+            todos = functions.get_todos(FILE_PATH)
+            formated_todos = functions.display_todos(todos)
+            window["todos"].update(values=formated_todos)
+            window["todo"].update(value="")
+        else:
+            window["todo"].update(value="Please add some todo here!")
 
     if event == "show_todo":
         todos_list = functions.get_todos(FILE_PATH)
@@ -43,14 +49,31 @@ while True:
             no_todos = functions.print_no_todos()
             window["todos"].update(no_todos)
 
+    if event == "todos":
+        todo_to_edit = values["todos"][0]
+        if todo_to_edit:
+            data_list = todo_to_edit.split(" - ")
+            todo_number = int(data_list[0])
+            todo_value = " - ".join(data_list[1:]).strip()
+            window["todo"].update(value=todo_value)
+
     if event == "edit_todo":
-        pass
+        new_todo_value = values["todo"]
+        if new_todo_value:
+            todos = functions.get_todos(FILE_PATH)
+            todos[todo_number - 1] = new_todo_value + "\n"
+            functions.save_todos(FILE_PATH, todos)
+            formatted_todos = functions.display_todos(todos)
+            window["todos"].update(values=formatted_todos)
+            window["todo"].update(value="")
 
 
     if event == "complete_todo":
-        pass
-
-
-
+        todos = functions.get_todos(FILE_PATH)
+        todo_to_complete = todos.pop(todo_number - 1)
+        functions.save_todos(FILE_PATH, todos)
+        formatted_todos = functions.display_todos(todos)
+        window["todos"].update(values=formatted_todos)
+        window["todo"].update(value="")
 
 window.close()
