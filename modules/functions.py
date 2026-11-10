@@ -15,14 +15,13 @@ def get_todos(file_path):
 def add_todo(file_path, todo_to_add):
     """ Adds new task and save it in the file. """
     with open(file_path, "a") as file:
-        file.write(todo_to_add)
+        file.write(todo_to_add.capitalize())
 
 
 def display_todos(todos_list):
     """ Reads all the todos from a file and displays them on the screen. """
-    for index, todo in enumerate(todos_list):
-        todo_number = index + 1
-        print(f"{todo_number} - {todo.strip()}")
+    formatted_todos = [f"{index+1} - {todo}" for index, todo in enumerate(todos_list)]
+    return formatted_todos
 
 
 def save_todos(file_path, todos_list):
@@ -33,4 +32,4 @@ def save_todos(file_path, todos_list):
 
 def print_no_todos():
     """ Prints \"No todos available.\" """
-    print("No todos available!")
+    return "No todos available!"
