@@ -1,4 +1,3 @@
-import time
 import FreeSimpleGUI as sg
 from modules import functions
 
@@ -12,16 +11,16 @@ todos_list = sg.Listbox(values=[], key="todos", size=(40, 5), enable_events=True
 edit_button = sg.Button("Edit", key="edit_todo")
 complete_btn = sg.Button("Complete", key="complete_todo")
 
-layout = [
-    [label],
-    [todo_input, add_button],
-    [show_button ],
-    [todos_list],
-    [edit_button, complete_btn]
-]
-window = sg.Window("TODO App", layout=layout, font=("Helvetica", 20))
+window = sg.Window("TODO App",
+                   layout=[[label],
+                           [todo_input, add_button],
+                           [show_button],
+                           [todos_list],
+                           [edit_button, complete_btn]],
+                   font=("Helvetica", 20))
 
 todo_number = 0
+
 while True:
     event, values = window.read()
 
