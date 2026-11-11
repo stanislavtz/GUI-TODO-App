@@ -1,31 +1,40 @@
+import time
 import FreeSimpleGUI as sg
 from modules import functions
 
 FILE_PATH = "files/todos.txt"
 
+clock = sg.Text("", key="clock")
 label = sg.Text("Type in a todo")
 todo_input = sg.InputText(tooltip="Enter a todo", key="todo")
 add_button = sg.Button("Add", key="add_todo")
 show_button = sg.Button("Show", key="show_todo")
-todos_list = sg.Listbox(values=[], key="todos", size=(40, 5), enable_events=True)
+todos_list = sg.Listbox(values=[],
+                        key="todos",
+                        size=(40, 5),
+                        enable_events=True,)
 edit_button = sg.Button("Edit", key="edit_todo")
 complete_btn = sg.Button("Complete", key="complete_todo")
+exit_button = sg.Button("Exit", key="exit")
 
 window = sg.Window("TODO App",
-                   layout=[[label],
+                   layout=[[clock],
+                           [label],
                            [todo_input, add_button],
                            [show_button],
                            [todos_list],
-                           [edit_button, complete_btn]],
+                           [edit_button, complete_btn,exit_button]],
                    font=("Helvetica", 20))
 
 todo_number = 0
 
 while True:
-    event, values = window.read()
+    event, values = window.read(timeout=10)
 
     if event == sg.WIN_CLOSED:
         break
+
+    window["clock"].update(value=time.strftime("%d-%b-%Y %H:%M:%S"))
 
     if event == "add_todo":
         todo = values["todo"]
@@ -37,7 +46,7 @@ while True:
             window["todos"].update(values=formated_todos)
             window["todo"].update(value="")
         else:
-            window["todo"].update(value="Please add some todo here!")
+            sg.popup("Please write some todo!", title="Invalid Input", font=("Helvetica", 20))
 
     if event == "show_todo":
         todos_list = functions.get_todos(FILE_PATH)
@@ -46,15 +55,17 @@ while True:
             window["todos"].update(values=formatted_todos)
         else:
             no_todos = functions.print_no_todos()
-            window["todos"].update(no_todos)
+            sg.popup(no_todos, title="No Todos", font=("Helvetica", 20))
 
     if event == "todos":
-        todo_to_edit = values["todos"][0]
-        if todo_to_edit:
+        try:
+            todo_to_edit = values["todos"][0]
             data_list = todo_to_edit.split(" - ")
             todo_number = int(data_list[0])
             todo_value = " - ".join(data_list[1:]).strip()
             window["todo"].update(value=todo_value)
+        except IndexError:
+            sg.popup("Please select some todo.", title="Invalid Action", font=("Helvetica", 20))
 
     if event == "edit_todo":
         new_todo_value = values["todo"]
@@ -74,5 +85,8 @@ while True:
         formatted_todos = functions.display_todos(todos)
         window["todos"].update(values=formatted_todos)
         window["todo"].update(value="")
+
+    if event == "exit":
+        break
 
 window.close()
