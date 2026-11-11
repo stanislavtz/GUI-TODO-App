@@ -4,6 +4,8 @@ from modules import functions
 
 FILE_PATH = "files/todos.txt"
 
+sg.theme("DarkTeal12")
+
 clock = sg.Text("", key="clock")
 label = sg.Text("Type in a todo")
 todo_input = sg.InputText(tooltip="Enter a todo", key="todo")
